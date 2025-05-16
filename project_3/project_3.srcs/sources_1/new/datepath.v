@@ -34,27 +34,34 @@ module datepath(
     );
     
     wire [31:0] srcA,srcB;
+    wire [5:0] rs,rt,rd;
+    wire offset;
+    assign offset=instr[15:0];
+    assign rs = instr[25:21];
+    assign rt = instr[20:16];
+    assign rd = instr[15:11];
+    
     regfile regfile(
         .clk(clk),
-        .we3(we3),
-        .ra1(instr[25:21]),
-        .ra2(ra2),
-        .wa3(instr[20:13]),
+        .we3(regwrite),
+        .ra1(rs),
+        .ra2(rt),
+        .wa3(rt),
         .wd3(readdata),
         .rd1(srcA),
-        .rd2(rd2)
+        .rd2(writedata)
     );
     
     wire [15:0] extend_offset;
     signext signext(
-    .a(instr[15:0]),
+    .a(offset),
     .y(extend_offset)
     );
     
     mux2(
     .s(alusrc),
     .a(extend_offset),
-    .b(rd2),
+    .b(writedata),
     .y(srcB)
     );
     
