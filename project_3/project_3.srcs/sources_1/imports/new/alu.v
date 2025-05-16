@@ -23,14 +23,18 @@
 module alu(
     input wire [31:0] num1,num2,
     input wire [2:0] op,
-    output reg [31:0] result
+    output reg [31:0] result,
+    output reg zero
     );
     
-    //zero
     always @(*) begin
+        zero = 1'b0;
         case(op)
             3'b010:  result = num1 + num2;            // 无符号加法
-            3'b110:  result = num1 - num2;            // 减法
+            3'b110: begin                             // 减法
+                result = num1 - num2;
+                if (result==0) zero = 1'b1;
+                end           
             3'b000:  result = num1 & num2;            // 按位与
             3'b001:  result = num1 | num2;            // 按位或
             3'b111:  result = ($signed(num1) < $signed(num2)) ? 32'd1 : 32'd0; // 有符号SLT

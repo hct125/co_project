@@ -22,9 +22,9 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module datepath(
+module datapath(
 	input wire clk,rst,
-	output memtoreg, pcsrc, alusrc, regdst, regwrite, jump,
+	output memtoreg, pcsrc, alusrc, regdst, regwrite, jump,branch,
 	output [2:0] alucontrol,
 	output overflow,zero,
     output wire[31:0] pc,
@@ -35,7 +35,7 @@ module datepath(
     
     wire [31:0] srcA,srcB,wd3_result;
     wire [5:0] rs,rt,rd,write_reg;
-    wire offset;
+    wire [15:0] offset;
     assign offset=instr[15:0];
     assign rs = instr[25:21];
     assign rt = instr[20:16];
@@ -59,7 +59,7 @@ module datepath(
         .rd2(writedata)
     );
     
-    wire [15:0] extend_offset;
+    wire [31:0] extend_offset,pc_branch;
     signext signext(
     .a(offset),
     .y(extend_offset)
@@ -76,8 +76,11 @@ module datepath(
     .num1(srcA),
     .num2(srcB),
     .op(alucontrol),
-    .result(aluout)
+    .result(aluout),
+    .zero(zero)
     );
+    
+    assign pcsrc = zero && branch;
     
     mux2 memtoreg_(
     .s(memtoreg),
@@ -90,6 +93,24 @@ module datepath(
     .clk(clk),
     .rst(rst),
     .pc(pc)
+    );
+    
+    sl2 sl2(
+    .a(extend_offset),
+    .y(pc_branch)
+    );
+    
+    adder pc_branch_add(
+    .a(pc),
+    .b(pc_branch),
+    .y(pc_branch)
+    );
+    
+    mux2 pcsrc_(
+    .s(pcsrc),
+    .a(pc_branch),
+    .b(pc),
+    .y(pc)
     );
     
     

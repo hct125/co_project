@@ -35,6 +35,6 @@ module mips(
 	controller c(instr[31:26],instr[5:0],zero,memtoreg,
 		memwrite,pcsrc,alusrc,regdst,regwrite,jump,branch,alucontrol);
 	datapath dp(clk,rst,memtoreg,pcsrc,alusrc,
-		regdst,regwrite,jump,alucontrol,overflow,zero,pc,instr,aluout,writedata,readdata);
+		regdst,regwrite,jump,branch,alucontrol,overflow,zero,pc,instr,aluout,writedata,readdata);
 	
 endmodule
