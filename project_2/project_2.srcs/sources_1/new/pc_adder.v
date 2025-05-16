@@ -1,4 +1,4 @@
-`timescale 1ns / 1ps
+
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
@@ -21,9 +21,9 @@
 
 
 module pc_adder(
-    input [31:0] pc,
-    input [31:0] pc_add,
-    output [31:0] pc_next
+    input [8:0] pc,
+    input [8:0] pc_add,
+    output [8:0] pc_next
     );
     assign pc_next=pc+pc_add;
 endmodule

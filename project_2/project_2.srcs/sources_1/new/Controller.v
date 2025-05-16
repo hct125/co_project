@@ -1,6 +1,6 @@
 module controller(
     input [31:0] inst,
-    output mentoreg,
+    output memtoreg,
     output memwrite,
     output pcsrc,
     output alusrc,

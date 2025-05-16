@@ -1,4 +1,4 @@
-`timescale 1ns / 1ps
+
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
@@ -22,20 +22,20 @@
 
 module pc(
     input clk,
-    input reset,
-    output reg [31:0] pc,
+    input rst,
+    output reg [7:0] pc,
     output reg inst_ce
     );
     
-    wire [31:0] pc_next;
+    wire [7:0] pc_next;
     pc_adder pc_adder(
         .pc(pc),
-        .pc_add(32'h4),
+        .pc_add(8'h4),
         .pc_next(pc_next));
     
-    always@(posedge clk ,posedge reset) 
+    always@(posedge clk ,posedge rst) 
     begin
-        if (reset) begin
+        if (rst) begin
             pc <= -4;
             inst_ce <= 0;
         end
