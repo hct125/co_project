@@ -33,21 +33,28 @@ module datepath(
     input wire[31:0] readdata
     );
     
-    wire [31:0] srcA,srcB;
-    wire [5:0] rs,rt,rd;
+    wire [31:0] srcA,srcB,wd3_result;
+    wire [5:0] rs,rt,rd,write_reg;
     wire offset;
     assign offset=instr[15:0];
     assign rs = instr[25:21];
     assign rt = instr[20:16];
     assign rd = instr[15:11];
+        
+    mux2 regdst_(
+    .s(regdst),
+    .a(rd),
+    .b(rt),
+    .y(write_reg)
+    );
     
     regfile regfile(
         .clk(clk),
         .we3(regwrite),
         .ra1(rs),
         .ra2(rt),
-        .wa3(rt),
-        .wd3(readdata),
+        .wa3(write_reg),
+        .wd3(wd3_result),
         .rd1(srcA),
         .rd2(writedata)
     );
@@ -58,7 +65,7 @@ module datepath(
     .y(extend_offset)
     );
     
-    mux2(
+    mux2 alusrc_(
     .s(alusrc),
     .a(extend_offset),
     .b(writedata),
@@ -70,6 +77,13 @@ module datepath(
     .num2(srcB),
     .op(alucontrol),
     .result(aluout)
+    );
+    
+    mux2 memtoreg_(
+    .s(memtoreg),
+    .a(readdata),
+    .b(aluout),
+    .y(wd3_result)
     );
     
     pc pc_plus(
