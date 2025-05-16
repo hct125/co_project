@@ -26,6 +26,7 @@ module alu(
     output reg [31:0] result
     );
     
+    //zero
     always @(*) begin
         case(op)
             3'b010:  result = num1 + num2;            // ÎÞ·ûºÅ¼Ó·¨

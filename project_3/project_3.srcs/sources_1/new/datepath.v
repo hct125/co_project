@@ -33,15 +33,44 @@ module datepath(
     input wire[31:0] readdata
     );
     
+    wire [31:0] srcA,srcB;
     regfile regfile(
         .clk(clk),
         .we3(we3),
-        .ra1(ra1),
+        .ra1(instr[25:21]),
         .ra2(ra2),
-        .wa3(wa3),
-        .wd3(wd3),
-        .rd1(rd1),
+        .wa3(instr[20:13]),
+        .wd3(readdata),
+        .rd1(srcA),
         .rd2(rd2)
     );
+    
+    wire [15:0] extend_offset;
+    signext signext(
+    .a(instr[15:0]),
+    .y(extend_offset)
+    );
+    
+    mux2(
+    .s(alusrc),
+    .a(extend_offset),
+    .b(rd2),
+    .y(srcB)
+    );
+    
+    alu alu(
+    .num1(srcA),
+    .num2(srcB),
+    .op(alucontrol),
+    .result(aluout)
+    );
+    
+    pc pc_plus(
+    .clk(clk),
+    .rst(rst),
+    .pc(pc)
+    );
+    
+    
     
 endmodule

@@ -23,25 +23,22 @@
 module pc(
     input clk,
     input rst,
-    output reg [31:0] pc,
-    output reg inst_ce
+    output reg [31:0] pc
     );
     
     wire [31:0] pc_next;
-    pc_adder pc_adder(
-        .pc(pc),
-        .pc_add(32'h4),
-        .pc_next(pc_next));
+    adder pc_adder(
+        .a(pc),
+        .b(32'h4),
+        .y(pc_next));
     
     always@(posedge clk ,posedge rst) 
     begin
         if (rst) begin
             pc <= -4;
-            inst_ce <= 0;
         end
         else begin 
             pc <= pc_next;
-            inst_ce <= 1;
         end
     end
     
