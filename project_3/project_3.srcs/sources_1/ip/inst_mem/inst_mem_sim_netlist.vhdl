@@ -1,11 +1,11 @@
 -- Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2018.1 (win64) Build 2188600 Wed Apr  4 18:40:38 MDT 2018
--- Date        : Fri May 16 22:00:16 2025
+-- Date        : Sat May 17 12:42:07 2025
 -- Host        : CCC running 64-bit major release  (build 9200)
--- Command     : write_vhdl -force -mode funcsim -rename_top inst_mem -prefix
---               inst_mem_ inst_ram_sim_netlist.vhdl
--- Design      : inst_ram
+-- Command     : write_vhdl -force -mode funcsim
+--               E:/APC/cpu/co_project/project_3/project_3.srcs/sources_1/ip/inst_mem/inst_mem_sim_netlist.vhdl
+-- Design      : inst_mem
 -- Purpose     : This VHDL netlist is a functional simulation representation of the design and should not be modified or
 --               synthesized. This netlist cannot be used for SDF annotated simulation.
 -- Device      : xc7a100tcsg324-1
@@ -18,11 +18,12 @@ entity inst_mem_blk_mem_gen_prim_wrapper_init is
   port (
     douta : out STD_LOGIC_VECTOR ( 31 downto 0 );
     clka : in STD_LOGIC;
-    ena : in STD_LOGIC;
     addra : in STD_LOGIC_VECTOR ( 7 downto 0 );
     dina : in STD_LOGIC_VECTOR ( 31 downto 0 );
     wea : in STD_LOGIC_VECTOR ( 0 to 0 )
   );
+  attribute ORIG_REF_NAME : string;
+  attribute ORIG_REF_NAME of inst_mem_blk_mem_gen_prim_wrapper_init : entity is "blk_mem_gen_prim_wrapper_init";
 end inst_mem_blk_mem_gen_prim_wrapper_init;
 
 architecture STRUCTURE of inst_mem_blk_mem_gen_prim_wrapper_init is
@@ -154,10 +155,10 @@ begin
       DOPADOP(0) => \DEVICE_7SERIES.NO_BMM_INFO.SP.WIDE_PRIM18.ram_n_33\,
       DOPBDOP(1) => \DEVICE_7SERIES.NO_BMM_INFO.SP.WIDE_PRIM18.ram_n_34\,
       DOPBDOP(0) => \DEVICE_7SERIES.NO_BMM_INFO.SP.WIDE_PRIM18.ram_n_35\,
-      ENARDEN => ena,
-      ENBWREN => ena,
-      REGCEAREGCE => ena,
-      REGCEB => ena,
+      ENARDEN => '1',
+      ENBWREN => '1',
+      REGCEAREGCE => '1',
+      REGCEB => '1',
       RSTRAMARSTRAM => '0',
       RSTRAMB => '0',
       RSTREGARSTREG => '0',
@@ -177,11 +178,12 @@ entity inst_mem_blk_mem_gen_prim_width is
   port (
     douta : out STD_LOGIC_VECTOR ( 31 downto 0 );
     clka : in STD_LOGIC;
-    ena : in STD_LOGIC;
     addra : in STD_LOGIC_VECTOR ( 7 downto 0 );
     dina : in STD_LOGIC_VECTOR ( 31 downto 0 );
     wea : in STD_LOGIC_VECTOR ( 0 to 0 )
   );
+  attribute ORIG_REF_NAME : string;
+  attribute ORIG_REF_NAME of inst_mem_blk_mem_gen_prim_width : entity is "blk_mem_gen_prim_width";
 end inst_mem_blk_mem_gen_prim_width;
 
 architecture STRUCTURE of inst_mem_blk_mem_gen_prim_width is
@@ -192,7 +194,6 @@ begin
       clka => clka,
       dina(31 downto 0) => dina(31 downto 0),
       douta(31 downto 0) => douta(31 downto 0),
-      ena => ena,
       wea(0) => wea(0)
     );
 end STRUCTURE;
@@ -204,11 +205,12 @@ entity inst_mem_blk_mem_gen_generic_cstr is
   port (
     douta : out STD_LOGIC_VECTOR ( 31 downto 0 );
     clka : in STD_LOGIC;
-    ena : in STD_LOGIC;
     addra : in STD_LOGIC_VECTOR ( 7 downto 0 );
     dina : in STD_LOGIC_VECTOR ( 31 downto 0 );
     wea : in STD_LOGIC_VECTOR ( 0 to 0 )
   );
+  attribute ORIG_REF_NAME : string;
+  attribute ORIG_REF_NAME of inst_mem_blk_mem_gen_generic_cstr : entity is "blk_mem_gen_generic_cstr";
 end inst_mem_blk_mem_gen_generic_cstr;
 
 architecture STRUCTURE of inst_mem_blk_mem_gen_generic_cstr is
@@ -219,7 +221,6 @@ begin
       clka => clka,
       dina(31 downto 0) => dina(31 downto 0),
       douta(31 downto 0) => douta(31 downto 0),
-      ena => ena,
       wea(0) => wea(0)
     );
 end STRUCTURE;
@@ -231,11 +232,12 @@ entity inst_mem_blk_mem_gen_top is
   port (
     douta : out STD_LOGIC_VECTOR ( 31 downto 0 );
     clka : in STD_LOGIC;
-    ena : in STD_LOGIC;
     addra : in STD_LOGIC_VECTOR ( 7 downto 0 );
     dina : in STD_LOGIC_VECTOR ( 31 downto 0 );
     wea : in STD_LOGIC_VECTOR ( 0 to 0 )
   );
+  attribute ORIG_REF_NAME : string;
+  attribute ORIG_REF_NAME of inst_mem_blk_mem_gen_top : entity is "blk_mem_gen_top";
 end inst_mem_blk_mem_gen_top;
 
 architecture STRUCTURE of inst_mem_blk_mem_gen_top is
@@ -246,7 +248,6 @@ begin
       clka => clka,
       dina(31 downto 0) => dina(31 downto 0),
       douta(31 downto 0) => douta(31 downto 0),
-      ena => ena,
       wea(0) => wea(0)
     );
 end STRUCTURE;
@@ -258,11 +259,12 @@ entity inst_mem_blk_mem_gen_v8_4_1_synth is
   port (
     douta : out STD_LOGIC_VECTOR ( 31 downto 0 );
     clka : in STD_LOGIC;
-    ena : in STD_LOGIC;
     addra : in STD_LOGIC_VECTOR ( 7 downto 0 );
     dina : in STD_LOGIC_VECTOR ( 31 downto 0 );
     wea : in STD_LOGIC_VECTOR ( 0 to 0 )
   );
+  attribute ORIG_REF_NAME : string;
+  attribute ORIG_REF_NAME of inst_mem_blk_mem_gen_v8_4_1_synth : entity is "blk_mem_gen_v8_4_1_synth";
 end inst_mem_blk_mem_gen_v8_4_1_synth;
 
 architecture STRUCTURE of inst_mem_blk_mem_gen_v8_4_1_synth is
@@ -273,7 +275,6 @@ begin
       clka => clka,
       dina(31 downto 0) => dina(31 downto 0),
       douta(31 downto 0) => douta(31 downto 0),
-      ena => ena,
       wea(0) => wea(0)
     );
 end STRUCTURE;
@@ -400,7 +401,7 @@ entity inst_mem_blk_mem_gen_v8_4_1 is
   attribute C_HAS_AXI_ID : integer;
   attribute C_HAS_AXI_ID of inst_mem_blk_mem_gen_v8_4_1 : entity is 0;
   attribute C_HAS_ENA : integer;
-  attribute C_HAS_ENA of inst_mem_blk_mem_gen_v8_4_1 : entity is 1;
+  attribute C_HAS_ENA of inst_mem_blk_mem_gen_v8_4_1 : entity is 0;
   attribute C_HAS_ENB : integer;
   attribute C_HAS_ENB of inst_mem_blk_mem_gen_v8_4_1 : entity is 0;
   attribute C_HAS_INJECTERR : integer;
@@ -430,9 +431,9 @@ entity inst_mem_blk_mem_gen_v8_4_1 is
   attribute C_INITB_VAL : string;
   attribute C_INITB_VAL of inst_mem_blk_mem_gen_v8_4_1 : entity is "0";
   attribute C_INIT_FILE : string;
-  attribute C_INIT_FILE of inst_mem_blk_mem_gen_v8_4_1 : entity is "inst_ram.mem";
+  attribute C_INIT_FILE of inst_mem_blk_mem_gen_v8_4_1 : entity is "inst_mem.mem";
   attribute C_INIT_FILE_NAME : string;
-  attribute C_INIT_FILE_NAME of inst_mem_blk_mem_gen_v8_4_1 : entity is "inst_ram.mif";
+  attribute C_INIT_FILE_NAME of inst_mem_blk_mem_gen_v8_4_1 : entity is "inst_mem.mif";
   attribute C_INTERFACE_TYPE : integer;
   attribute C_INTERFACE_TYPE of inst_mem_blk_mem_gen_v8_4_1 : entity is 0;
   attribute C_LOAD_INIT_FILE : integer;
@@ -493,6 +494,8 @@ entity inst_mem_blk_mem_gen_v8_4_1 is
   attribute C_WRITE_WIDTH_B of inst_mem_blk_mem_gen_v8_4_1 : entity is 32;
   attribute C_XDEVICEFAMILY : string;
   attribute C_XDEVICEFAMILY of inst_mem_blk_mem_gen_v8_4_1 : entity is "artix7";
+  attribute ORIG_REF_NAME : string;
+  attribute ORIG_REF_NAME of inst_mem_blk_mem_gen_v8_4_1 : entity is "blk_mem_gen_v8_4_1";
   attribute downgradeipidentifiedwarnings : string;
   attribute downgradeipidentifiedwarnings of inst_mem_blk_mem_gen_v8_4_1 : entity is "yes";
 end inst_mem_blk_mem_gen_v8_4_1;
@@ -614,7 +617,6 @@ inst_blk_mem_gen: entity work.inst_mem_blk_mem_gen_v8_4_1_synth
       clka => clka,
       dina(31 downto 0) => dina(31 downto 0),
       douta(31 downto 0) => douta(31 downto 0),
-      ena => ena,
       wea(0) => wea(0)
     );
 end STRUCTURE;
@@ -625,7 +627,6 @@ use UNISIM.VCOMPONENTS.ALL;
 entity inst_mem is
   port (
     clka : in STD_LOGIC;
-    ena : in STD_LOGIC;
     wea : in STD_LOGIC_VECTOR ( 0 to 0 );
     addra : in STD_LOGIC_VECTOR ( 7 downto 0 );
     dina : in STD_LOGIC_VECTOR ( 31 downto 0 );
@@ -634,7 +635,7 @@ entity inst_mem is
   attribute NotValidForBitStream : boolean;
   attribute NotValidForBitStream of inst_mem : entity is true;
   attribute CHECK_LICENSE_TYPE : string;
-  attribute CHECK_LICENSE_TYPE of inst_mem : entity is "inst_ram,blk_mem_gen_v8_4_1,{}";
+  attribute CHECK_LICENSE_TYPE of inst_mem : entity is "inst_mem,blk_mem_gen_v8_4_1,{}";
   attribute downgradeipidentifiedwarnings : string;
   attribute downgradeipidentifiedwarnings of inst_mem : entity is "yes";
   attribute x_core_info : string;
@@ -715,7 +716,7 @@ architecture STRUCTURE of inst_mem is
   attribute C_HAS_AXI_ID : integer;
   attribute C_HAS_AXI_ID of U0 : label is 0;
   attribute C_HAS_ENA : integer;
-  attribute C_HAS_ENA of U0 : label is 1;
+  attribute C_HAS_ENA of U0 : label is 0;
   attribute C_HAS_ENB : integer;
   attribute C_HAS_ENB of U0 : label is 0;
   attribute C_HAS_INJECTERR : integer;
@@ -745,9 +746,9 @@ architecture STRUCTURE of inst_mem is
   attribute C_INITB_VAL : string;
   attribute C_INITB_VAL of U0 : label is "0";
   attribute C_INIT_FILE : string;
-  attribute C_INIT_FILE of U0 : label is "inst_ram.mem";
+  attribute C_INIT_FILE of U0 : label is "inst_mem.mem";
   attribute C_INIT_FILE_NAME : string;
-  attribute C_INIT_FILE_NAME of U0 : label is "inst_ram.mif";
+  attribute C_INIT_FILE_NAME of U0 : label is "inst_mem.mif";
   attribute C_INTERFACE_TYPE : integer;
   attribute C_INTERFACE_TYPE of U0 : label is 0;
   attribute C_LOAD_INIT_FILE : integer;
@@ -813,7 +814,6 @@ architecture STRUCTURE of inst_mem is
   attribute x_interface_info of clka : signal is "xilinx.com:interface:bram:1.0 BRAM_PORTA CLK";
   attribute x_interface_parameter : string;
   attribute x_interface_parameter of clka : signal is "XIL_INTERFACENAME BRAM_PORTA, MEM_SIZE 8192, MEM_WIDTH 32, MEM_ECC NONE, MASTER_TYPE OTHER";
-  attribute x_interface_info of ena : signal is "xilinx.com:interface:bram:1.0 BRAM_PORTA EN";
   attribute x_interface_info of addra : signal is "xilinx.com:interface:bram:1.0 BRAM_PORTA ADDR";
   attribute x_interface_info of dina : signal is "xilinx.com:interface:bram:1.0 BRAM_PORTA DIN";
   attribute x_interface_info of douta : signal is "xilinx.com:interface:bram:1.0 BRAM_PORTA DOUT";
@@ -832,7 +832,7 @@ U0: entity work.inst_mem_blk_mem_gen_v8_4_1
       douta(31 downto 0) => douta(31 downto 0),
       doutb(31 downto 0) => NLW_U0_doutb_UNCONNECTED(31 downto 0),
       eccpipece => '0',
-      ena => ena,
+      ena => '0',
       enb => '0',
       injectdbiterr => '0',
       injectsbiterr => '0',

@@ -24,7 +24,7 @@ module top(
     end
     pc pc_(clk_1, rst, pc, inst_ce);
     rom inst_rom (clk_1,inst_ce,pc[7:2],inst);
-    controller ctrl(inst,memtoreg, memwrite, regwrite, alusrc, regdst, jump, branch, alucontrol);
+    controller ctrl(inst[31:26],inst[5:0],memtoreg, memwrite, regwrite, alusrc, regdst, jump, branch, alucontrol);
 
     assign led = {alucontrol, branch, jump, regwrite, regdst, alusrc, memwrite, memtoreg};
     display dis(hclk,rst,inst,seg,ans);
