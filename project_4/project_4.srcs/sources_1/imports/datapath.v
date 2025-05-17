@@ -162,30 +162,31 @@ module datapath(
     wire [1:0]forward_AE,forward_BE;
 
     //fetch阶段
-    flopr #(32) pc_next_(
+    flopenr #(32) pc_next_(
     .clk(clk),.rst(rst),
+    .en(~stall_F),
     .d(pc_next),
     .q(pc_F)
     );
     //decode
     flopenr #(64) F2D_reg(
         .clk(clk), .rst(rst),
-        .en(~stall_F), 
+        .en(~stall_D), 
         .d(F2D_in),
         .q(F2D_out)
     );
     
-    flopenr #(152) D2E_reg(
+    flopenrc #(152) D2E_reg(
         .clk(clk), .rst(rst),
-        .en(~stall_D),
+        .en(1'b1),
+        .clear(flush_E),
         .d(D2E_in),
         .q(D2E_out)
     );
     
-    flopenrc #(106) E2M_reg(
+    flopenr #(106) E2M_reg(
         .clk(clk), .rst(rst),
         .en(1'b1),  // 通常不需要暂停
-        .clear(flush_E),
         .d(E2M_in),
         .q(E2M_out)
     );
@@ -222,6 +223,26 @@ module datapath(
     .a(offset),
     .y(ext_off_D)
     );
+    
+    wire equal_E,pcsrc_E;
+    wire [31:0]rd1_br,rd2_br;
+    
+    mux2 #(32) branch_rd1(   //提前判断分支的数据前推
+    .s(forward_AD),
+    .a(aluout_M),
+    .b(rd1_D),
+    .y(rd1_br)
+    );
+    
+    mux2 #(32) branch_rd2(   //提前判断分支的数据前推
+    .s(forward_BD),
+    .a(aluout_M),
+    .b(rd2_D),
+    .y(rd2_br)
+    );
+    
+    assign equal_E = (rd1_br==rd2_br) ? 1:0;
+    assign pcsrc_E = equal_E & branch_D;
     
     mux3 #(32) alusrcA_(    //alusrcA端口数据选择,数据前推
     .s(forward_AE),
@@ -288,7 +309,7 @@ module datapath(
     );
     
     mux2 #(32) pcsrc_(           //分支跳转判断
-    .s(pcsrc_M),
+    .s(pcsrc_E),
     .a(pc_branch_M),
     .b(pc_4_F),
     .y(pc_b)

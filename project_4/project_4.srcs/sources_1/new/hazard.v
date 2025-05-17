@@ -3,7 +3,7 @@ module hazard(
     input regwrite_W,regwrite_M,memtoreg_E,memtoreg_M,regwrite_E,branch_D, //writeback阶段
     output [1:0] forward_AE,forward_BE,
     output forward_AD,forward_BD,
-    output stallF,stallD,flushE
+    output stall_F,stall_D,flush_E
     );
 
 assign forward_AE = (rs_E != 5'b0) ? 
@@ -20,8 +20,14 @@ assign forward_BE = (rt_E != 5'b0) ?
 
 wire stall = ((rs_D == writereg_E) || (rt_D == writereg_E)) && memtoreg_E;
 
+assign forward_AD = ((rs_D != 0) && (rs_D == writereg_M) && regwrite_M);//writereg写寄存器的寄存器号
+assign forward_BD = ((rt_D != 0) && (rt_D == writereg_M) && regwrite_M);//regwrite写寄存器使能信号
+
+wire branch_stall; //拿来判断的是否为之前指令要写的寄存器，是的话计算出来地址再前推进行判断
+assign branch_stall = branch_D && regwrite_E && (writereg_E == rs_D || writereg_E == rt_D) || branch_D && memtoreg_M && (writereg_M == rs_D || writereg_M == rt_D);
+
 // 控制信号生成
-assign stallF = stall;
-assign stallD = stall;
-assign flushE = stall;
+assign stall_F = stall || branch_stall;
+assign stall_D = stall || branch_stall;
+assign flush_E = stall || branch_stall;
 endmodule
