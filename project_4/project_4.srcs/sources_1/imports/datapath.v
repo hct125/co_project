@@ -37,9 +37,9 @@ module datapath(
     wire [4:0] rs,rt,rd,writereg;
     wire [15:0] offset;
     assign offset=instr_D[15:0];
-    assign rs = instr_D[25:21];
-    assign rt = instr_D[20:16];
-    assign rd = instr_D[15:11];
+    assign rs_D = instr_D[25:21];
+    assign rt_D = instr_D[20:16];
+    assign rd_D = instr_D[15:11];
     
     
     //fetch 
@@ -53,8 +53,8 @@ module datapath(
     
     //decode
 
-    wire [146:0] D2E_in;       // D->E寄存器输入
-    wire [146:0] D2E_out;      // D->E寄存器输出
+    wire [151:0] D2E_in;       // D->E寄存器输入
+    wire [151:0] D2E_out;      // D->E寄存器输出
     
     // 控制信号
     wire regwrite_E, memtoreg_E, memwrite_E,branch_E,alusrc_E, regdst_E;
@@ -62,8 +62,8 @@ module datapath(
     
     // 数据信号
     wire [31:0] rd1_D, rd2_D, ext_off_D;
-    wire [31:0] srcA_E, ext_off_E,pc_4_E;
-    wire [4:0] rt_E,rd_E;
+    wire [31:0] rd1_E,rd2_E,srcA_E, ext_off_E,pc_4_E;
+    wire [4:0] rs_E,rt_E,rd_E;
     
     assign D2E_in = {
         regwrite_D,    // 1
@@ -75,7 +75,9 @@ module datapath(
         regdst_D,      // 1
         rd1_D,         // 32
         rd2_D,         // 32
-        instr [20:11],  //10
+        rs_E,        // 5
+        rt_D,             //5
+        rd_D,          //5
         ext_off_D,    // 32
         pc_4_D       // 32
     }; // 147
@@ -88,10 +90,11 @@ module datapath(
         alucontrol_E,   // 3
         alusrc_E,       // 1
         regdst_E,       // 1
-        srcA_E,          // 32
-        writedata_E,          // 32
-        rt_E,          //32
-        rd_E,           //32
+        rd1_E,          // 32
+        rd2_E,          // 32
+        rs_E,           // 5
+        rt_E,          //5
+        rd_E,           //5
         ext_off_E,     // 32        
         pc_4_E         // 32
     } = D2E_out; //147
@@ -132,7 +135,7 @@ module datapath(
     wire [70:0] M2W_in;        // M->W寄存器输入
     wire [70:0] M2W_out;       // M->W寄存器输出
     wire regwrite_W,memtoreg_W;
-    wire [31:0] readdata_W,alu_result_W;
+    wire [31:0] readdata_W,aluout_W;
     wire [4:0] writereg_W;
     
     assign M2W_in = {
@@ -154,26 +157,27 @@ module datapath(
     //Writeback
     wire [31:0] wd3_W;         // 写回数据
     
+    wire stall_F,stall_D,flush_E;
+    wire forward_AD,forward_BD;
+    wire [1:0]forward_AE,forward_BE;
 
     //fetch阶段
-    flopr pc_next_(
+    flopr #(32) pc_next_(
     .clk(clk),.rst(rst),
     .d(pc_next),
     .q(pc_F)
     );
     //decode
-        flopenrc #(64) F2D_reg(
+    flopenr #(64) F2D_reg(
         .clk(clk), .rst(rst),
         .en(~stall_F), 
-        .clear(flush_F),
         .d(F2D_in),
         .q(F2D_out)
     );
     
-    flopenrc #(147) D2E_reg(
+    flopenr #(152) D2E_reg(
         .clk(clk), .rst(rst),
         .en(~stall_D),
-        .clear(flush_D),
         .d(D2E_in),
         .q(D2E_out)
     );
@@ -186,17 +190,16 @@ module datapath(
         .q(E2M_out)
     );
     
-    flopenrc #(71) M2W_reg(
+    flopenr #(71) M2W_reg(
         .clk(clk), .rst(rst),
         .en(1'b1),  // 通常不需要暂停
-        .clear(1'b0),
         .d(M2W_in),
         .q(M2W_out)
     );
 
     
         
-    mux2 regdst_(       //寄存器堆写数据地址选择，wa3
+    mux2 #(32) regdst_(       //寄存器堆写数据地址选择，wa3
     .s(regdst_E),
     .a(rd_E),
     .b(rt_E),
@@ -220,7 +223,23 @@ module datapath(
     .y(ext_off_D)
     );
     
-    mux2 alusrc_(       //alusrcB端口数据选择
+    mux3 #(32) alusrcA_(    //alusrcA端口数据选择,数据前推
+    .s(forward_AE),
+    .a(rd1_E),
+    .b(wd3_result_W),
+    .c(aluout_M),
+    .y(srcA_E)
+    );
+    
+    mux3 #(32) alusrcB_(    //alusrcB端口数据选择,数据前推
+    .s(forward_BE),
+    .a(rd2_E),
+    .b(wd3_result_W),
+    .c(aluout_M),
+    .y(writedata_E)
+    );
+    
+    mux2 #(32) alusrc_(       //alusrcB端口数据选择
     .s(alusrc_E),
     .a(ext_off_E),
     .b(writedata_E),
@@ -237,7 +256,7 @@ module datapath(
     
     assign pcsrc_M = zero_M & branch_M;     //分支跳转指令pcsrc
     
-    mux2 memtoreg_(         //寄存器堆写数据选择，wd3
+    mux2 #(32) memtoreg_(         //寄存器堆写数据选择，wd3
     .s(memtoreg_W),
     .a(readdata_W),
     .b(aluout_W),
@@ -268,25 +287,44 @@ module datapath(
     .y(pc_branch_E)
     );
     
-    mux2 pcsrc_(           //分支跳转判断
+    mux2 #(32) pcsrc_(           //分支跳转判断
     .s(pcsrc_M),
     .a(pc_branch_M),
     .b(pc_4_F),
     .y(pc_b)
     );
     
-    mux2 jump_(          //jump判断
+    mux2 #(32) jump_(          //jump判断
     .s(jump),
     .a(pc_jump),
     .b(pc_b),
     .y(pc_next)
     );
     
-    pc pc_(             //pc_next赋值给pc
-    .clk(clk),
-    .rst(rst),
-    .pc_next(pc_next),
-    .pc(pc)
+
+hazard hazard_unit(
+        // 输入连接
+        .rs_D(rs_D),
+        .rt_D(rt_D),
+        .rs_E(rs_E),
+        .rt_E(rt_E),
+        .writereg_E(writereg_E),
+        .writereg_M(writereg_M),
+        .writereg_W(writereg_W),
+        .regwrite_E(regwrite_E),
+        .regwrite_M(regwrite_M),
+        .regwrite_W(regwrite_W),
+        .memtoreg_E(memtoreg_E),
+        .memtoreg_M(memtoreg_M),
+        .branch_D(branch_D),
+        
+        .forward_AE(forward_AE),
+        .forward_BE(forward_BE),
+        .forward_AD(forward_AD),
+        .forward_BD(forward_BD),
+        .stall_F(stall_F),
+        .stall_D(stall_D),
+        .flush_E(flush_E)
     );
     
 endmodule
