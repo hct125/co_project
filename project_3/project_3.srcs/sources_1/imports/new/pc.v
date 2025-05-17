@@ -23,14 +23,9 @@
 module pc(
     input clk,
     input rst,
+    input pc_next,
     output reg [31:0] pc
     );
-    
-    wire [31:0] pc_next;
-    adder pc_adder(
-        .a(pc),
-        .b(32'h4),
-        .y(pc_next));
     
     always@(posedge clk ,posedge rst) 
     begin

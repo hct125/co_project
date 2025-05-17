@@ -33,7 +33,7 @@ module datapath(
     input wire[31:0] readdata
     );
     
-    wire [31:0] srcA,srcB,wd3_result,extend_offset,pc_branch,pc_jump,jump_address;
+    wire [31:0] pc_4,pc_b,pc_next,srcA,srcB,wd3_result,extend_offset,pc_branch,branch_offset,pc_jump,jump_offset;
     wire [5:0] rs,rt,rd,write_reg;
     wire [15:0] offset;
     assign offset=instr[15:0];
@@ -80,7 +80,7 @@ module datapath(
     .zero(zero)
     );
     
-    assign pcsrc = zero && branch;
+    assign pcsrc = zero & branch;
     
     mux2 memtoreg_(
     .s(memtoreg),
@@ -89,42 +89,49 @@ module datapath(
     .y(wd3_result)
     );
     
-    pc pc_plus(
-    .clk(clk),
-    .rst(rst),
-    .pc(pc)     //此时pc <= pc_next
+    adder pc_plus(
+    .a(pc),
+    .b(32'h4),
+    .y(pc_4)
     );
     
     sl2 pc_branch_sl2(
     .a(extend_offset),
-    .y(pc_branch)
+    .y(branch_offset)
     );
     
     sl2 pc_jump_sl2(
     .a(instr),
-    .y(jump_address)
+    .y(jump_offset)
     );
     
-    assign pc_jump = {pc[31:28],jump_address[27:0]}; 
+    assign pc_jump = {pc_4[31:28],jump_offset[27:0]}; 
     
     adder pc_branch_add(
-    .a(pc),
-    .b(pc_branch),
+    .a(pc_4),
+    .b(branch_offset),
     .y(pc_branch)
     );
     
     mux2 pcsrc_(
     .s(pcsrc),
     .a(pc_branch),
-    .b(pc),
-    .y(pc)
+    .b(pc_4),
+    .y(pc_b)
     );
     
     mux2 jump_(
     .s(jump),
     .a(pc_jump),
-    .b(pc),
-    .y(pc)
+    .b(pc_b),
+    .y(pc_next)
+    );
+    
+    pc pc_(             //pc_next赋值给pc
+    .clk(clk),
+    .rst(rst),
+    .pc_next(pc_next),
+    .pc(pc)
     );
     
 endmodule
