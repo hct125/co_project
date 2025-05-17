@@ -33,7 +33,7 @@ module datapath(
     input wire[31:0] readdata
     );
     
-    wire [31:0] srcA,srcB,wd3_result;
+    wire [31:0] srcA,srcB,wd3_result,extend_offset,pc_branch,pc_jump,jump_address;
     wire [5:0] rs,rt,rd,write_reg;
     wire [15:0] offset;
     assign offset=instr[15:0];
@@ -59,7 +59,7 @@ module datapath(
         .rd2(writedata)
     );
     
-    wire [31:0] extend_offset,pc_branch;
+    
     signext signext(
     .a(offset),
     .y(extend_offset)
@@ -92,13 +92,20 @@ module datapath(
     pc pc_plus(
     .clk(clk),
     .rst(rst),
-    .pc(pc)
+    .pc(pc)     //¥À ±pc <= pc_next
     );
     
-    sl2 sl2(
+    sl2 pc_branch_sl2(
     .a(extend_offset),
     .y(pc_branch)
     );
+    
+    sl2 pc_jump_sl2(
+    .a(instr),
+    .y(jump_address)
+    );
+    
+    assign pc_jump = {pc[31:28],jump_address[27:0]}; 
     
     adder pc_branch_add(
     .a(pc),
@@ -113,6 +120,11 @@ module datapath(
     .y(pc)
     );
     
-    
+    mux2 jump_(
+    .s(jump),
+    .a(pc_jump),
+    .b(pc),
+    .y(pc)
+    );
     
 endmodule
