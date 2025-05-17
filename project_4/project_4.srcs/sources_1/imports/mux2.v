@@ -20,10 +20,10 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module mux2(
+module mux2#(parameter WIDTH = 32)(
     input wire s,
-    input wire[31:0] a,b,
-    output wire[31:0] y
+    input wire[WIDTH-1:0] a,b,
+    output wire[WIDTH-1:0] y
     );
     
     assign y = s ? a : b;

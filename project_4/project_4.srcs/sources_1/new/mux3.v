@@ -1,11 +1,11 @@
-
+`timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
 // 
-// Create Date: 2025/05/14 20:03:29
+// Create Date: 2025/05/17 14:38:04
 // Design Name: 
-// Module Name: pc
+// Module Name: mux3
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,21 +20,13 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module pc(
-    input clk,
-    input rst,
-    input pc_next,
-    output reg [31:0] pc
-    );
+module mux3 #(parameter WIDTH = 32)
+             (input [1:0] s,
+              input [WIDTH-1:0] a, b, c,
+              output [WIDTH-1:0] y);
     
-    always@(posedge clk ,posedge rst) 
-    begin
-        if (rst) begin
-            pc <= -4;
-        end
-        else begin 
-            pc <= pc_next;
-        end
-    end
-    
+    assign y = (s == 2'b00) ? a : 
+               (s == 2'b01) ? b :
+               (s == 2'b10) ? c :
+               {WIDTH{1'bx}};
 endmodule

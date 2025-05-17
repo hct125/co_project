@@ -1,11 +1,11 @@
-
+`timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
 // 
-// Create Date: 2025/05/14 20:03:29
+// Create Date: 2025/05/17 14:14:42
 // Design Name: 
-// Module Name: pc
+// Module Name: flopr
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,21 +20,17 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module pc(
-    input clk,
-    input rst,
-    input pc_next,
-    output reg [31:0] pc
+module flopr # (parameter WIDTH = 32)(
+    input wire clk,rst,
+    input wire[WIDTH-1:0] d,
+    output reg[WIDTH-1:0] q 
     );
     
-    always@(posedge clk ,posedge rst) 
-    begin
+    always @(posedge clk,posedge rst) begin
         if (rst) begin
-            pc <= -4;
-        end
-        else begin 
-            pc <= pc_next;
+            q <= 0;
+        end else begin 
+            q <= d;
         end
     end
-    
 endmodule
